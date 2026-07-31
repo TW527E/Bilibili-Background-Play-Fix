@@ -1,0 +1,11 @@
+{
+  "name": "bilibili-safari-background-play-fix",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tampermonkey userscript that keeps Bilibili media playing and buffering in background Safari tabs.",
+  "scripts": {
+    "check": "node --check bilibili-safari-background-play.user.js",
+    "test": "node --test tests/userscript.test.cjs"
+  },
+  "license": "MIT"
+}
