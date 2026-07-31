@@ -3,13 +3,13 @@
 // @name:zh-TW   Bilibili Safari 背景播放修復
 // @name:en      Bilibili Safari Background Playback Fix
 // @namespace    https://github.com/TW527E/Bilibili-Background-Play-Fix
-// @version      1.0.0
+// @version      1.0.1
 // @description  修復 Safari 切換分頁後 Bilibili 容易暫停、卡住及停止預載後續影片的問題。
 // @description:zh-TW 修復 Safari 切換分頁後 Bilibili 容易暫停、卡住及停止預載後續影片的問題。
 // @description:en Keeps Bilibili playing and buffering after switching Safari tabs, and recovers unexpected pauses and stalls.
 // @author       TW527E
-// @homepageURL  https://github.com/TW527E/Bilibili-Background-Play-Fix
-// @supportURL   https://github.com/TW527E/Bilibili-Background-Play-Fix/issues
+// @homepageURL  https://greasyfork.org/zh-TW/scripts/589347-bilibili-safari-%E8%83%8C%E6%99%AF%E6%92%AD%E6%94%BE%E4%BF%AE%E5%BE%A9
+// @supportURL   https://greasyfork.org/zh-TW/scripts/589347-bilibili-safari-%E8%83%8C%E6%99%AF%E6%92%AD%E6%94%BE%E4%BF%AE%E5%BE%A9/feedback
 // @match        https://www.bilibili.com/video/*
 // @match        https://www.bilibili.com/list/*
 // @match        https://www.bilibili.com/medialist/play/*
@@ -372,9 +372,9 @@
     startWatchdog();
 
     const api = Object.freeze({
-        version: '1.0.0',
+        version: '1.0.1',
         status: () => ({
-            version: '1.0.0',
+            version: '1.0.1',
             actuallyHidden,
             reportedHidden: document.hidden,
             reportedVisibilityState: document.visibilityState,

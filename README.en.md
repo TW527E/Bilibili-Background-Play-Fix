@@ -6,7 +6,7 @@ A userscript made for Safari and Tampermonkey that improves Bilibili playback wh
 
 ## Quick Install
 
-Direct installation will be available from Greasy Fork after its script page is created. You can also manually install [`bilibili-safari-background-play.user.js`](bilibili-safari-background-play.user.js) from GitHub.
+**[Install the script from Greasy Fork](https://greasyfork.org/en/scripts/589347-bilibili-safari-background-play-fix)**
 
 ## Features
 
@@ -38,7 +38,7 @@ Direct installation will be available from Greasy Fork after its script page is 
 ### Greasy Fork
 
 1. Install and enable [Tampermonkey](https://www.tampermonkey.net/?browser=safari) in Safari.
-2. Open the Greasy Fork script page.
+2. Open the [Greasy Fork script page](https://greasyfork.org/en/scripts/589347-bilibili-safari-background-play-fix).
 3. Select the install option and confirm it in Tampermonkey.
 4. Reload any open Bilibili playback page.
 

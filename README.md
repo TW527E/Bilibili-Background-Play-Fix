@@ -6,7 +6,7 @@
 
 ## 快速安裝
 
-Greasy Fork 頁面建立後即可直接安裝；目前也可以從 GitHub 手動安裝 [`bilibili-safari-background-play.user.js`](bilibili-safari-background-play.user.js)。
+**[前往 Greasy Fork 安裝腳本](https://greasyfork.org/zh-TW/scripts/589347-bilibili-safari-背景播放修復)**
 
 ## 功能
 
@@ -38,7 +38,7 @@ Greasy Fork 頁面建立後即可直接安裝；目前也可以從 GitHub 手動
 ### Greasy Fork
 
 1. 在 Safari 安裝並啟用 [Tampermonkey](https://www.tampermonkey.net/?browser=safari)。
-2. 前往 Greasy Fork 腳本頁面。
+2. 前往 [Greasy Fork 腳本頁面](https://greasyfork.org/zh-TW/scripts/589347-bilibili-safari-背景播放修復)。
 3. 選擇安裝腳本，並在 Tampermonkey 確認安裝。
 4. 重新整理已開啟的 Bilibili 播放頁。
 
