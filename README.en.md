@@ -1,4 +1,4 @@
-[繁體中文](README.md) | [English](README.en.md)
+[繁體中文](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/README.md) | [English](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/README.en.md)
 
 # Bilibili Safari Background Playback Fix
 
@@ -46,7 +46,7 @@ A userscript made for Safari and Tampermonkey that improves Bilibili playback wh
 
 1. Open the Tampermonkey Dashboard and create a new userscript.
 2. Delete the editor's default content.
-3. Paste the complete contents of [`bilibili-safari-background-play.user.js`](bilibili-safari-background-play.user.js) and save it.
+3. Paste the complete contents of [`bilibili-safari-background-play.user.js`](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/bilibili-safari-background-play.user.js) and save it.
 4. Reload the Bilibili playback page.
 
 > `@run-at document-start` is essential. It lets the script take control of the Page Visibility API before Bilibili registers its background-tab handlers.
@@ -92,10 +92,10 @@ The watchdog intervenes only when the user previously requested playback and the
 
 ## Files
 
-- [`bilibili-safari-background-play.user.js`](bilibili-safari-background-play.user.js) — Tampermonkey userscript
-- [`README.md`](README.md) — Traditional Chinese documentation
-- [`README.en.md`](README.en.md) — English documentation
-- [`tests/userscript.test.cjs`](tests/userscript.test.cjs) — Node.js tests
+- [`bilibili-safari-background-play.user.js`](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/bilibili-safari-background-play.user.js) — Tampermonkey userscript
+- [`README.md`](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/README.md) — Traditional Chinese documentation
+- [`README.en.md`](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/README.en.md) — English documentation
+- [`tests/userscript.test.cjs`](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/tests/userscript.test.cjs) — Node.js tests
 
 ## Development Checks
 
@@ -106,4 +106,4 @@ npm test
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/LICENSE).
