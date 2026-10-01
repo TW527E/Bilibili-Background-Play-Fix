@@ -1,4 +1,4 @@
-[繁體中文](README.md) | [English](README.en.md)
+[繁體中文](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/README.md) | [English](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/README.en.md)
 
 # Bilibili Safari 背景播放修復
 
@@ -46,7 +46,7 @@
 
 1. 開啟 Tampermonkey Dashboard，新增一個 userscript。
 2. 刪除編輯器中的預設內容。
-3. 貼入 [`bilibili-safari-background-play.user.js`](bilibili-safari-background-play.user.js) 的完整內容並儲存。
+3. 貼入 [`bilibili-safari-background-play.user.js`](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/bilibili-safari-background-play.user.js) 的完整內容並儲存。
 4. 重新整理 Bilibili 播放頁。
 
 > `@run-at document-start` 很重要。它讓腳本能在 Bilibili 註冊背景分頁處理邏輯前，先接管 Page Visibility API。
@@ -92,10 +92,10 @@ watchdog 只有在「使用者原本要求播放」且「頁面真的位於背�
 
 ## 檔案
 
-- [`bilibili-safari-background-play.user.js`](bilibili-safari-background-play.user.js) — Tampermonkey 使用者腳本
-- [`README.md`](README.md) — 繁體中文說明
-- [`README.en.md`](README.en.md) — English documentation
-- [`tests/userscript.test.cjs`](tests/userscript.test.cjs) — Node.js 測試
+- [`bilibili-safari-background-play.user.js`](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/bilibili-safari-background-play.user.js) — Tampermonkey 使用者腳本
+- [`README.md`](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/README.md) — 繁體中文說明
+- [`README.en.md`](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/README.en.md) — English documentation
+- [`tests/userscript.test.cjs`](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/tests/userscript.test.cjs) — Node.js 測試
 
 ## 開發檢查
 
@@ -106,4 +106,4 @@ npm test
 
 ## 授權
 
-本專案採用 [MIT License](LICENSE)。
+本專案採用 [MIT License](https://github.com/TW527E/Bilibili-Background-Play-Fix/blob/main/LICENSE)。
