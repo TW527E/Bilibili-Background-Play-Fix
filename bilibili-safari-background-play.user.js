@@ -3,7 +3,7 @@
 // @name:zh-TW   Bilibili Safari 背景播放修復
 // @name:en      Bilibili Safari Background Playback Fix
 // @namespace    https://github.com/TW527E/Bilibili-Background-Play-Fix
-// @version      1.0.1
+// @version      1.0.2
 // @description  修復 Safari 切換分頁後 Bilibili 容易暫停、卡住及停止預載後續影片的問題。
 // @description:zh-TW 修復 Safari 切換分頁後 Bilibili 容易暫停、卡住及停止預載後續影片的問題。
 // @description:en Keeps Bilibili playing and buffering after switching Safari tabs, and recovers unexpected pauses and stalls.
@@ -320,6 +320,57 @@
         }
     };
 
+    // 背景中由「系統」送來的暫停（媒體鍵、控制中心／「正在播放」、Touch Bar）
+    // 也是使用者的意思，不能被當成 Bilibili／Safari 的自動暫停而立刻恢復。
+    // 這些操作都經過 Media Session：包住網站註冊的 pause/stop 處理器先記下
+    // 意圖；網站沒有註冊時由這裡提供處理器，暫停所有媒體。
+    const markUserPause = (source) => {
+        for (const media of trackedMedia) getState(media).wanted = false;
+        log('使用者從系統暫停：', source);
+    };
+
+    const installMediaSessionIntent = () => {
+        const session = typeof navigator === 'undefined' ? null : navigator.mediaSession;
+        if (!session || typeof session.setActionHandler !== 'function') return;
+
+        const original = session.setActionHandler;
+        const fallback = (action) => () => {
+            markUserPause(action);
+            for (const media of trackedMedia) {
+                if (!media.paused) media.pause();
+            }
+        };
+        const wrap = (action, handler) => {
+            if (action !== 'pause' && action !== 'stop') return handler;
+            if (typeof handler !== 'function') return fallback(action);
+            return function (details) {
+                markUserPause(action);
+                return handler.call(this, details);
+            };
+        };
+
+        try {
+            Object.defineProperty(session, 'setActionHandler', {
+                configurable: true,
+                writable: true,
+                value: function setActionHandler(action, handler) {
+                    return original.call(this, action, wrap(action, handler));
+                },
+            });
+        } catch (error) {
+            log('無法包住 Media Session 處理器', error);
+            return;
+        }
+
+        for (const action of ['pause', 'stop']) {
+            try {
+                original.call(session, action, fallback(action));
+            } catch (error) {
+                log(`此瀏覽器不支援 Media Session「${action}」`, error);
+            }
+        }
+    };
+
     const watchdogTick = () => {
         const now = Date.now();
         scanMedia();
@@ -368,13 +419,14 @@
     document.addEventListener('visibilitychange', onNativeVisibilityChange, true);
     document.addEventListener('webkitvisibilitychange', onNativeVisibilityChange, true);
     installVisibilityShim();
+    installMediaSessionIntent();
     startObserver();
     startWatchdog();
 
     const api = Object.freeze({
-        version: '1.0.1',
+        version: '1.0.2',
         status: () => ({
-            version: '1.0.1',
+            version: '1.0.2',
             actuallyHidden,
             reportedHidden: document.hidden,
             reportedVisibilityState: document.visibilityState,
