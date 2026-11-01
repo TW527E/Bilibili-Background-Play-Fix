@@ -9,7 +9,7 @@ const userscript = fs.readFileSync(
     'utf8',
 );
 
-const createHarness = ({ initiallyHidden = false, initiallyPaused = false } = {}) => {
+const createHarness = ({ initiallyHidden = false, initiallyPaused = false, mediaSession = null } = {}) => {
     let nativeHidden = initiallyHidden;
 
     class MockMediaElement extends EventTarget {
@@ -50,6 +50,11 @@ const createHarness = ({ initiallyHidden = false, initiallyPaused = false } = {}
             this.playCalls += 1;
             this.paused = false;
             return Promise.resolve();
+        }
+
+        pause() {
+            this.paused = true;
+            this.dispatchEvent(new Event('pause'));
         }
     }
 
@@ -119,6 +124,7 @@ const createHarness = ({ initiallyHidden = false, initiallyPaused = false } = {}
         clearInterval: window.clearInterval,
         queueMicrotask,
         setInterval: window.setInterval,
+        navigator: mediaSession ? { mediaSession } : {},
         window,
     });
 
@@ -170,4 +176,44 @@ test('respects a pause made while the tab is in the foreground', async () => {
 
     assert.equal(harness.media.playCalls, 0);
     assert.equal(harness.api.status().playingWanted, 0);
+});
+
+const createMediaSession = () => {
+    const handlers = new Map();
+    return {
+        handlers,
+        setActionHandler(action, handler) {
+            handlers.set(action, handler);
+        },
+    };
+};
+
+test('a pause from the system media controls is not undone in the background', async () => {
+    const session = createMediaSession();
+    const harness = createHarness({ initiallyPaused: false, mediaSession: session });
+
+    harness.setHidden(true);
+    session.handlers.get('pause')();
+    await new Promise((resolve) => queueMicrotask(resolve));
+
+    assert.equal(harness.media.paused, true);
+    assert.equal(harness.media.playCalls, 0);
+    assert.equal(harness.api.status().playingWanted, 0);
+});
+
+test("the site's own pause handler still runs and is treated as a user pause", async () => {
+    const session = createMediaSession();
+    const harness = createHarness({ initiallyPaused: false, mediaSession: session });
+    let siteHandlerCalls = 0;
+    session.setActionHandler('pause', () => {
+        siteHandlerCalls += 1;
+        harness.media.pause();
+    });
+
+    harness.setHidden(true);
+    session.handlers.get('pause')();
+    await new Promise((resolve) => queueMicrotask(resolve));
+
+    assert.equal(siteHandlerCalls, 1);
+    assert.equal(harness.media.playCalls, 0);
 });
