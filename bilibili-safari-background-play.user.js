@@ -3,7 +3,7 @@
 // @name:zh-TW   Bilibili Safari 背景播放修復
 // @name:en      Bilibili Safari Background Playback Fix
 // @namespace    https://github.com/TW527E/Bilibili-Background-Play-Fix
-// @version      1.0.2
+// @version      1.0.3
 // @description  修復 Safari 切換分頁後 Bilibili 容易暫停、卡住及停止預載後續影片的問題。
 // @description:zh-TW 修復 Safari 切換分頁後 Bilibili 容易暫停、卡住及停止預載後續影片的問題。
 // @description:en Keeps Bilibili playing and buffering after switching Safari tabs, and recovers unexpected pauses and stalls.
@@ -118,11 +118,17 @@
         }
     };
 
+    const pageKey = () => {
+        const part = /[?&]p=(\d+)/.exec(location.search || '');
+        return `${location.pathname}?p=${part ? part[1] : ''}`;
+    };
+
     const getState = (media) => {
         let state = mediaStates.get(media);
         if (!state) {
             state = {
                 wanted: !media.paused && !media.ended,
+                page: pageKey(),
                 lastCurrentTime: Number(media.currentTime) || 0,
                 lastProgressAt: Date.now(),
                 lastKickAt: 0,
@@ -242,12 +248,16 @@
         applyMediaHints(media);
 
         media.addEventListener('play', () => {
+            // 事件是排隊派送的：播放事件送達前若已被系統暫停（媒體鍵、控制中心），
+            // 這裡不能把剛清掉的播放意圖又設回去。
+            if (media.paused || media.ended) return;
             state.wanted = true;
             state.lastProgressAt = Date.now();
             log('記錄播放意圖');
         }, true);
 
         media.addEventListener('playing', () => {
+            if (media.paused || media.ended) return;
             state.wanted = true;
             state.lastCurrentTime = Number(media.currentTime) || 0;
             state.lastProgressAt = Date.now();
@@ -273,6 +283,17 @@
             } else {
                 queueRescue(media, '收到背景 pause 事件');
             }
+        }, true);
+
+        // 播放器重用同一個元素載入「另一支影片」時，舊影片的播放意圖不適用於新來源；
+        // 新來源真的開始播放後，play 事件會重新記錄意圖。以頁面網址判斷是否換片：
+        // 同一支影片重新接上來源（Safari 背景回收、切換畫質）時要保留意圖，才能恢復播放。
+        media.addEventListener('emptied', () => {
+            const page = pageKey();
+            if (page === state.page) return;
+            state.page = page;
+            state.wanted = false;
+            state.rescuePending = false;
         }, true);
 
         media.addEventListener('ended', () => {
@@ -424,9 +445,9 @@
     startWatchdog();
 
     const api = Object.freeze({
-        version: '1.0.2',
+        version: '1.0.3',
         status: () => ({
-            version: '1.0.2',
+            version: '1.0.3',
             actuallyHidden,
             reportedHidden: document.hidden,
             reportedVisibilityState: document.visibilityState,
