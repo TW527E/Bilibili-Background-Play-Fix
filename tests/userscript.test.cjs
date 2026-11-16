@@ -104,6 +104,8 @@ const createHarness = ({ initiallyHidden = false, initiallyPaused = false, media
     };
     window.window = window;
 
+    const location = { pathname: '/video/BV1test', search: '' };
+
     const context = vm.createContext({
         Blob,
         console,
@@ -125,12 +127,14 @@ const createHarness = ({ initiallyHidden = false, initiallyPaused = false, media
         queueMicrotask,
         setInterval: window.setInterval,
         navigator: mediaSession ? { mediaSession } : {},
+        location,
         window,
     });
 
     vm.runInContext(userscript, context, { filename: 'bilibili-safari-background-play.user.js' });
 
     return {
+        location,
         api: window.__bilibiliSafariBackgroundPlayFix,
         document,
         media,
@@ -216,4 +220,49 @@ test("the site's own pause handler still runs and is treated as a user pause", a
 
     assert.equal(siteHandlerCalls, 1);
     assert.equal(harness.media.playCalls, 0);
+});
+
+test('a different video loaded into the same element is not started in the background', async () => {
+    const harness = createHarness({ initiallyPaused: false });
+
+    harness.setHidden(true);
+    harness.location.pathname = '/video/BV2other';
+    harness.media.paused = true;
+    harness.media.dispatchEvent(new Event('emptied'));
+    harness.media.dispatchEvent(new Event('pause'));
+    await new Promise((resolve) => queueMicrotask(resolve));
+
+    assert.equal(harness.media.playCalls, 0);
+    assert.equal(harness.media.paused, true);
+});
+
+test('the same video re-attaching its source keeps the play intent', async () => {
+    const harness = createHarness({ initiallyPaused: false });
+
+    harness.setHidden(true);
+    harness.media.paused = true;
+    harness.media.dispatchEvent(new Event('emptied'));
+    harness.media.dispatchEvent(new Event('pause'));
+    await new Promise((resolve) => queueMicrotask(resolve));
+
+    assert.equal(harness.media.playCalls, 1);
+});
+
+test('a new video whose URL updates after its source keeps its own play intent', async () => {
+    const harness = createHarness({ initiallyPaused: false });
+
+    // The SPA swaps the source first, so this emptied still sees the old URL.
+    harness.media.dispatchEvent(new Event('emptied'));
+    harness.location.pathname = '/video/BV2other';
+    harness.media.paused = false;
+    harness.media.dispatchEvent(new Event('play'));
+
+    // Later the same new video re-attaches its source in the background.
+    harness.setHidden(true);
+    harness.media.paused = true;
+    harness.media.dispatchEvent(new Event('emptied'));
+    harness.media.dispatchEvent(new Event('pause'));
+    await new Promise((resolve) => queueMicrotask(resolve));
+
+    assert.equal(harness.media.playCalls, 1);
 });
