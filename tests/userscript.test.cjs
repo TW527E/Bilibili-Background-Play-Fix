@@ -247,3 +247,22 @@ test('the same video re-attaching its source keeps the play intent', async () =>
 
     assert.equal(harness.media.playCalls, 1);
 });
+
+test('a new video whose URL updates after its source keeps its own play intent', async () => {
+    const harness = createHarness({ initiallyPaused: false });
+
+    // The SPA swaps the source first, so this emptied still sees the old URL.
+    harness.media.dispatchEvent(new Event('emptied'));
+    harness.location.pathname = '/video/BV2other';
+    harness.media.paused = false;
+    harness.media.dispatchEvent(new Event('play'));
+
+    // Later the same new video re-attaches its source in the background.
+    harness.setHidden(true);
+    harness.media.paused = true;
+    harness.media.dispatchEvent(new Event('emptied'));
+    harness.media.dispatchEvent(new Event('pause'));
+    await new Promise((resolve) => queueMicrotask(resolve));
+
+    assert.equal(harness.media.playCalls, 1);
+});

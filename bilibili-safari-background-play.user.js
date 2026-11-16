@@ -252,6 +252,9 @@
             // 這裡不能把剛清掉的播放意圖又設回去。
             if (media.paused || media.ended) return;
             state.wanted = true;
+            // 播放意圖屬於現在這支影片：之後的換源要跟它的網址比較，
+            // 否則網址比來源晚更新時，同片重新接上來源會被當成換片。
+            state.page = pageKey();
             state.lastProgressAt = Date.now();
             log('記錄播放意圖');
         }, true);
@@ -259,6 +262,7 @@
         media.addEventListener('playing', () => {
             if (media.paused || media.ended) return;
             state.wanted = true;
+            state.page = pageKey();
             state.lastCurrentTime = Number(media.currentTime) || 0;
             state.lastProgressAt = Date.now();
         }, true);
